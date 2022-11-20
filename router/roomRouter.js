@@ -1,7 +1,6 @@
 const User = require("../classes/User");
 
 module.exports.join = function (io, socket, mainEvent) {
-  /* 유저 이름 중복인 경우 추가해야함 */
   socket.on("join", function (data) {
     console.log(socket.id, data);
     //client측에서 받은 data를 파싱
@@ -19,23 +18,33 @@ module.exports.join = function (io, socket, mainEvent) {
         socket.state = "false";
         socket.disconnect();
       } else {
-        //정상적으로 유저 접속
-        const user = new User(socket.name, socket); //유저 객체를 생성한다.
-        roomUpdate.addUser(user); //방이 존재할 경우 정상적으로 유저를 방 객체에 add한다.
-        //소켓 통신으로 data를 공유하기 위해 필요한 data만 추출한다.
-        let users = roomUpdate.getUsers.map((object) => {
-          return object.userName;
+        // 유저 이름 중복인 경우
+        let userList = roomUpdate.users.map((object) => {
+          return object.getUserName;
         });
+        if (userList.indexOf(socket.name) != -1) {
+          socket.emit("join", { state: "닉네임이 중복입니다." });
+          socket.state = "false";
+          socket.disconnect();
+        } else {
+          //정상적으로 유저 접속
+          const user = new User(socket.name, socket); //유저 객체를 생성한다.
+          roomUpdate.addUser(user); //방이 존재할 경우 정상적으로 유저를 방 객체에 add한다.
+          //소켓 통신으로 data를 공유하기 위해 필요한 data만 추출한다.
+          let users = roomUpdate.getUsers.map((object) => {
+            return object.userName;
+          });
 
-        const response = {
-          state: "200",
-          users: users,
-        };
+          const response = {
+            state: "200",
+            users: users,
+          };
 
-        socket.join(socket.roomId); //소켓 룸에 입장
-        console.log("response: " + users);
-        io.to(socket.roomId).emit("join", response); //같은 roomId에 속한 socket에만 data를 전송한다.
-        console.log(socket.roomId + ": " + socket.name + "님이 방에 입장.");
+          socket.join(socket.roomId); //소켓 룸에 입장
+          console.log("response: " + users);
+          io.to(socket.roomId).emit("join", response); //같은 roomId에 속한 socket에만 data를 전송한다.
+          console.log(socket.roomId + ": " + socket.name + "님이 방에 입장.");
+        }
       }
     else {
       socket.emit("join", { state: "방이 존재하지 않습니다." });
