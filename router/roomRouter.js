@@ -1,6 +1,7 @@
 const User = require("../classes/User");
 
 module.exports.join = function (io, socket, mainEvent) {
+  /* 유저 이름 중복인 경우 추가해야함 */
   socket.on("join", function (data) {
     console.log(socket.id, data);
     //client측에서 받은 data를 파싱
@@ -94,10 +95,10 @@ module.exports.disconnect = function (io, socket, mainEvent) {
       };
 
       socket.leave(socket.roomId);
-      io.to(socket.roomId).emit("exit", response);
+      io.to(socket.roomId).emit("join", response);
 
       // 해당 방에 사람이 없으면 방 폭파~
-      if (roomUpdate.roomSize == 0) {
+      if (roomUpdate.getRoomSize == 0) {
         mainEvent.deleteRoom(roomUpdate.roomId);
       }
     }
