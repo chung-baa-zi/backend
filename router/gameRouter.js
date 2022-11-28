@@ -83,7 +83,7 @@ module.exports.bombGame = function (io, socket, mainEvent) {
             losers: gameRoom.getGame.getGResult.getLosers,
             penalty: gameRoom.getGame.getGResult.getPenalty,
           };
-          io.to(gameRoom.roomId).emit("timeup", response);
+          io.to(gameRoom.roomId).emit("result", response);
           clearInterval(interval);
           gameRoom.deleteGame();
         }

@@ -5,6 +5,7 @@ const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 
 const room = require("./router/roomRouter");
+const game = require("./router/gameRouter");
 
 let mainEvent = new MainEvent();
 
@@ -24,4 +25,16 @@ io.on("connection", function (socket) {
 
   //유저가 방에서 퇴장했을 때
   room.disconnect(io, socket, mainEvent);
+
+  // 게임 시작
+  game.gameStart(io, socket, mainEvent);
+
+  // 터치게임 1번
+  game.touchGame(io, socket, mainEvent);
+
+  // 폭탄게임 2번
+  game.bombGame(io, socket, mainEvent);
+
+  // 밸런스게임 3번
+  game.balanceGame(io, socket, mainEvent);
 });

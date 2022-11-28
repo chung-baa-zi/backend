@@ -1,10 +1,13 @@
 const User = require("./User");
+const TouchGame = require("./TouchGame");
+const BombGame = require("./BombGame");
+const BalanceGame = require("./BalanceGame");
 
 class Room {
   constructor(roomId, gameManager) {
     this.roomId = roomId;
     this.gameManager = gameManager;
-    this.gameType = 0;
+    this.game = null;
     this.users = [];
     this.roomSize = 0;
   }
@@ -17,8 +20,8 @@ class Room {
     return this.gameManager;
   }
 
-  get getGameType() {
-    return this.gameType;
+  get getGame() {
+    return this.game;
   }
 
   get getUsers() {
@@ -53,6 +56,21 @@ class Room {
 
   changeGameManager(userName) {
     this.gameManager = userName;
+  }
+
+  createGame(gameType) {
+    if (gameType == 1) {
+      this.game = new TouchGame(gameType, this.roomId);
+    } else if (gameType == 2) {
+      this.game = new BombGame(gameType, this.roomId);
+    } else if (gameType == 3) {
+      this.game = new BalanceGame(gameType, this.roomId);
+    }
+  }
+
+  deleteGame() {
+    console(this.roomId, ": 게임을 종료합니다");
+    delete this.game;
   }
 }
 
