@@ -61,55 +61,63 @@ module.exports.bombGame = function (io, socket, mainEvent) {
     const gameRoom = mainEvent.roomList.find(
       (m) => m.getRoomId === String(socket.roomId)
     );
-    console.log("isStarted : " + gameRoom.getGame.getIsStarted);
-    // 게임 시작
-    if (gameRoom.getGame.getIsStarted == false) {
-      gameRoom.getGame.setIsStarted = true;
-      let users = [];
-      await gameRoom.getGame.startGame().then(() => {
-        users = gameRoom.getUsers.map((object) => {
-          return object.userName;
-        });
-        gameRoom.getGame.shuffleOrder(users);
-        // 섞인 유저리스트 출력
-        console.log(gameRoom.getGame.getRandomUsers);
-      });
-      // index 0 유저 출력
-      console.log(
-        gameRoom.getGame.getRandomUsers[gameRoom.getGame.getBombOwnerIndex]
-      );
-      const response = {
-        users: gameRoom.getGame.getRandomUsers,
-        index: gameRoom.getGame.getBombOwnerIndex,
-      };
-      io.to(gameRoom.roomId).emit("bombGame", response);
-      // 초 시작, 0.1초마다 갱신
-      let interval = setInterval(function () {
-        gameRoom.getGame.runTimerAlarm();
-        // 시간이 다됐다면 벌칙자 보냄
-        if (gameRoom.getGame.getTime <= 0) {
-          gameRoom.getGame.endGame();
-          const response = {
-            losers: gameRoom.getGame.getGResult.getLosers,
-            penalty: gameRoom.getGame.getGResult.getPenalty,
-          };
-          io.to(gameRoom.roomId).emit("result", response);
-          clearInterval(interval);
-          gameRoom.deleteGame();
-        }
-      }, 100);
+    // 게임방이 존재하는지 확인
+    let exist = true;
+    if (gameRoom.game == null) {
+      exist = false;
+      console.log("존재하지 않는 게임방");
     }
-    // 게임이 진행중이라면
-    else if (gameRoom.getGame.getIsStarted == true) {
-      gameRoom.getGame.setBombOwnerIndex();
-      console.log(
-        gameRoom.getGame.getRandomUsers[gameRoom.getGame.getBombOwnerIndex]
-      );
-      const response = {
-        users: gameRoom.getGame.getRandomUsers,
-        index: gameRoom.getGame.getBombOwnerIndex,
-      };
-      io.to(gameRoom.roomId).emit("bombGame", response);
+
+    if (exist) {
+      // 게임 시작
+      if (gameRoom.getGame.getIsStarted == false) {
+        gameRoom.getGame.setIsStarted = true;
+        let users = [];
+        await gameRoom.getGame.startGame().then(() => {
+          users = gameRoom.getUsers.map((object) => {
+            return object.userName;
+          });
+          gameRoom.getGame.shuffleOrder(users);
+          // 섞인 유저리스트 출력
+          console.log(gameRoom.getGame.getRandomUsers);
+        });
+        // index 0 유저 출력
+        console.log(
+          gameRoom.getGame.getRandomUsers[gameRoom.getGame.getBombOwnerIndex]
+        );
+        const response = {
+          users: gameRoom.getGame.getRandomUsers,
+          index: gameRoom.getGame.getBombOwnerIndex,
+        };
+        io.to(gameRoom.roomId).emit("bombGame", response);
+        // 초 시작, 0.1초마다 갱신
+        let interval = setInterval(function () {
+          gameRoom.getGame.runTimerAlarm();
+          // 시간이 다됐다면 벌칙자 보냄
+          if (gameRoom.getGame.getTime <= 0) {
+            gameRoom.getGame.endGame();
+            const response = {
+              losers: gameRoom.getGame.getGResult.getLosers,
+              penalty: gameRoom.getGame.getGResult.getPenalty,
+            };
+            io.to(gameRoom.roomId).emit("result", response);
+            clearInterval(interval);
+            gameRoom.deleteGame();
+          }
+        }, 100);
+      }
+      // 게임이 진행중이라면
+      else if (gameRoom.getGame.getIsStarted == true) {
+        gameRoom.getGame.setBombOwnerIndex();
+        console.log(
+          gameRoom.getGame.getRandomUsers[gameRoom.getGame.getBombOwnerIndex]
+        );
+        const response = {
+          users: gameRoom.getGame.getRandomUsers,
+          index: gameRoom.getGame.getBombOwnerIndex,
+        };
+        io.to(gameRoom.roomId).emit("bombGame", response);
+      }
     }
   });
 };
