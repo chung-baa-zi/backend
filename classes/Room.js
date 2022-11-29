@@ -69,7 +69,7 @@ class Room {
   }
 
   deleteGame() {
-    console(this.roomId, ": 게임을 종료합니다");
+    console.log(this.roomId, ": 게임을 종료합니다");
     delete this.game;
   }
 }

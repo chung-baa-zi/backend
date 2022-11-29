@@ -54,7 +54,7 @@ module.exports.join = function (io, socket, mainEvent) {
   });
 };
 
-module.exports.create = function (io, socket, mainEvent) {
+module.exports.create = function (socket, mainEvent) {
   socket.on("create", (data) => {
     socket.name = data.name;
     socket.roomId = data.roomId;
@@ -93,6 +93,18 @@ module.exports.disconnect = function (io, socket, mainEvent) {
     );
     //정상적인 퇴장일 때
     if (socket.state !== "false") {
+      //방장이 방을 나갔을 때
+      if (
+        socket.name == roomUpdate.getGameManager &&
+        roomUpdate.getRoomSize != 1
+      ) {
+        roomUpdate.changeGameManager(roomUpdate.users[1].userName);
+        console.log(
+          roomUpdate.getRoomId,
+          "방장 변경 => ",
+          roomUpdate.getGameManager
+        );
+      }
       roomUpdate.deleteUser(socket.name); //퇴장한 유저를 방에서 삭제한다.
       let users = roomUpdate.users.map((object) => {
         return object.getUserName;
@@ -109,6 +121,7 @@ module.exports.disconnect = function (io, socket, mainEvent) {
       // 해당 방에 사람이 없으면 방 폭파~
       if (roomUpdate.getRoomSize == 0) {
         mainEvent.deleteRoom(roomUpdate.roomId);
+        console.log(roomUpdate.getRoomId, ": 잔여인원 0 -> 방삭제");
       }
     }
 

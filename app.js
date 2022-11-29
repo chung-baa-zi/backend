@@ -21,7 +21,7 @@ io.on("connection", function (socket) {
   room.join(io, socket, mainEvent);
 
   //방장이 방을 생성했을 때
-  room.create(io, socket, mainEvent);
+  room.create(socket, mainEvent);
 
   //유저가 방에서 퇴장했을 때
   room.disconnect(io, socket, mainEvent);
@@ -36,5 +36,6 @@ io.on("connection", function (socket) {
   game.bombGame(io, socket, mainEvent);
 
   // 밸런스게임 3번
+  game.options(io, socket, mainEvent);
   game.balanceGame(io, socket, mainEvent);
 });

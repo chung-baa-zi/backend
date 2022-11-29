@@ -24,17 +24,27 @@ module.exports.touchGame = function (io, socket, mainEvent) {
       (m) => m.getRoomId === String(socket.roomId)
     );
 
-    await gameRoom.getGame.startGame();
+    if (gameRoom.getGame.getGResult.getScore.size == 0)
+      await gameRoom.getGame.startGame();
     gameRoom.getGame.getGResult.getScore.set(socket.name, touchCount);
 
-    if (gameRoom.game.getGResult.getScore.size === gameRoom.getRoomSize) {
+    if (gameRoom.getGame.getGResult.getScore.size === gameRoom.getRoomSize) {
       console.log(socket.roomId, "터치 게임 종료");
       gameRoom.game.endGame();
+
+      let users = [];
+      let score = [];
+      gameRoom.getGame.getGResult.getScore.forEach((value, key) => {
+        users.push(key);
+        score.push(value);
+      });
 
       const response = {
         losers: gameRoom.getGame.getGResult.getLosers,
         penalty: gameRoom.getGame.getGResult.getPenalty,
         score: Object.fromEntries(gameRoom.getGame.getGResult.getScore),
+        score1: score,
+        users: users,
       };
 
       //1초 멈추고 실행
