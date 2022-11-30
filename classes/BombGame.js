@@ -12,7 +12,9 @@ class BombGame extends Game {
   }
 
   runTimerAlarm() {
-    console.log("현재시간 : " + this.time);
+    if(this.time % 10 == 0) {
+      console.log("현재시간 : " + this.time);
+    }
     this.time = this.time - 0.1;
   }
 
@@ -68,6 +70,7 @@ class BombGame extends Game {
   }
 
   endGame() {
+    console.log(this.getRoomId, "폭탄 돌리기 게임을 종료했습니다.");
     this.gResult.losers.push(this.randomUsers[this.bombOwnerIndex]);
   }
 }

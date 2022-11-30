@@ -2,6 +2,7 @@ const DBAccess = require("../config/DBAccess");
 const Game = require("./Game");
 const db = new DBAccess();
 
+//밸런스 게임의 data와 method를 저장하는 class
 class BalanceGame extends Game {
   constructor(gameType, roomId) {
     super(gameType, roomId);
@@ -30,6 +31,7 @@ class BalanceGame extends Game {
     let options = [];
 
     this.getGResult.getScore.forEach((value) => {
+      //score map에 저장된 선택지 별 count를 계산
       if (resultToMap.has(value)) {
         resultToMap.set(value, resultToMap.get(value) + 1);
       } else {
@@ -39,7 +41,9 @@ class BalanceGame extends Game {
     });
 
     let result = [];
+    //선택지 별 count를 통해 패자들을 결정
     if (resultToMap.get(options[0]) == resultToMap.get(options[1])) {
+      //각 선택지 count가 같을 경우 모두 패자
       this.getGResult.getScore.forEach((value, key = key) => {
         result.push(key);
       });
@@ -58,6 +62,7 @@ class BalanceGame extends Game {
   }
 
   async setChoiceFromDB() {
+    //랜덤으로 선택지를 DB로 부터 읽어옴
     db.setSqlQuery = "select * from options order by rand() limit 1";
 
     await db.executeQuery().then((result) => {

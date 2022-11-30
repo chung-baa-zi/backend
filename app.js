@@ -1,9 +1,8 @@
-const MainEvent = require("./classes/mainEvent");
-const User = require("./classes/User");
 const app = require("express")();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 
+const MainEvent = require("./classes/mainEvent");
 const room = require("./router/roomRouter");
 const game = require("./router/gameRouter");
 

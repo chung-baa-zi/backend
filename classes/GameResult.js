@@ -1,6 +1,7 @@
 const DBAccess = require("../config/DBAccess");
 const db = new DBAccess();
 
+//게임의 결과를 다루는 class
 module.exports = class GameResult {
   constructor() {
     this.losers = [];
@@ -23,6 +24,7 @@ module.exports = class GameResult {
   }
 
   async randomCreatePenalty() {
+    //랜덤으로 DB에서 벌칙을 읽는다.
     db.sqlQuery = "select * from penalty order by rand() limit 1";
 
     await db.executeQuery().then((result) => {

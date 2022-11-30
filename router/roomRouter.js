@@ -11,10 +11,10 @@ module.exports.join = function (io, socket, mainEvent) {
       (m) => m.getRoomId === String(socket.roomId)
     );
     //roomId와 일치하는 방이 존재할 시
-    if (roomUpdate)
+    if (roomUpdate) {
       if (roomUpdate.getRoomSize == 6) {
         //존재하지만 정원이 초과할 시
-        socket.emit("join", { state: "정원이 초과했습니다." });
+        socket.emit("join", { state: "-100" });
         socket.state = "false";
         socket.disconnect();
       } else {
@@ -22,8 +22,9 @@ module.exports.join = function (io, socket, mainEvent) {
         let userList = roomUpdate.users.map((object) => {
           return object.getUserName;
         });
+        // 닉네임 중복
         if (userList.indexOf(socket.name) != -1) {
-          socket.emit("join", { state: "닉네임이 중복입니다." });
+          socket.emit("join", { state: "-101" });
           socket.state = "false";
           socket.disconnect();
         } else {
@@ -46,8 +47,9 @@ module.exports.join = function (io, socket, mainEvent) {
           console.log(socket.roomId + ": " + socket.name + "님이 방에 입장.");
         }
       }
-    else {
-      socket.emit("join", { state: "방이 존재하지 않습니다." });
+      // 방이 없을때
+    } else {
+      socket.emit("join", { state: "-102" });
       socket.state = "false";
       socket.disconnect();
     }
