@@ -1,10 +1,20 @@
 //방장 유저가 서버측으로 게임을 시작한다는 request를 전송
 module.exports.gameStart = function (io, socket, mainEvent) {
   socket.on("start", (data) => {
-    const gameType = data.gameType; //클라이언트 측으로 게임 타입을 받음(1 -> 터치게임, 2 -> 폭탄 게임, 3 -> 밸런스 게임)
+    let gameType = data.gameType; //클라이언트 측으로 게임 타입을 받음(1 -> 터치게임, 2 -> 폭탄 게임, 3 -> 밸런스 게임)
     const gameRoom = mainEvent.roomList.find(
       (m) => m.getRoomId === String(socket.roomId)
     );
+
+    if (gameRoom == undefined || gameRoom == null) {
+      console.log("잘 못 된 접근");
+      return;
+    }
+    if (gameType == 4) {
+      //random gameType이 들어왔을 때
+      gameType = Math.floor(Math.random() * 3) + 1;
+    }
+    console.log(gameType);
     gameRoom.createGame(gameType);
 
     const response = {
@@ -44,7 +54,8 @@ module.exports.touchGame = function (io, socket, mainEvent) {
       };
 
       console.log("response", response);
-      io.to(gameRoom.roomId).emit("result", response);
+      io.to(gameRoom.roomId).emit("touchGameResult", response);
+      console.log(response.score);
 
       gameRoom.deleteGame(); //한번의 게임을 끝나고 다음 게임을 위해 게임 객체를 삭제
     }
@@ -100,7 +111,7 @@ module.exports.bombGame = function (io, socket, mainEvent) {
             losers: gameRoom.getGame.getGResult.getLosers,
             penalty: gameRoom.getGame.getGResult.getPenalty,
           };
-          io.to(gameRoom.roomId).emit("result", response);
+          io.to(gameRoom.roomId).emit("bombGameResult", response);
           clearInterval(interval);
           gameRoom.deleteGame();
         }
@@ -162,7 +173,7 @@ module.exports.balanceGame = function (io, socket, mainEvent) {
       };
 
       console.log("response", response);
-      io.to(gameRoom.roomId).emit("result", response);
+      io.to(gameRoom.roomId).emit("balanceGameResult", response);
 
       gameRoom.deleteGame();
     }

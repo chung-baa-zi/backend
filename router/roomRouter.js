@@ -6,6 +6,7 @@ module.exports.join = function (io, socket, mainEvent) {
     //client측에서 받은 data를 파싱
     socket.name = data.name;
     socket.roomId = data.roomId;
+    socket.state = "true";
     //client 측에서 입력한 roomId와 일치한 방을 찾는다.
     let roomUpdate = mainEvent.roomList.find(
       (m) => m.getRoomId === String(socket.roomId)
@@ -89,12 +90,12 @@ module.exports.create = function (socket, mainEvent) {
 
 module.exports.disconnect = function (io, socket, mainEvent) {
   socket.on("disconnect", () => {
-    //퇴장한 유저의 방의 id로 room 객체를 찾는다.
-    let roomUpdate = mainEvent.roomList.find(
-      (m) => m.getRoomId === String(socket.roomId)
-    );
     //정상적인 퇴장일 때
-    if (socket.state !== "false") {
+    if (socket.state === "true") {
+      //퇴장한 유저의 방의 id로 room 객체를 찾는다.
+      let roomUpdate = mainEvent.roomList.find(
+        (m) => m.getRoomId === String(socket.roomId)
+      );
       //방장이 방을 나갔을 때
       if (
         socket.name == roomUpdate.getGameManager &&

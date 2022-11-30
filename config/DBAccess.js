@@ -4,8 +4,6 @@ const mysql = require("mysql");
 class DBAccess {
   constructor() {
     this.sqlQuery = "";
-    this.connection = null;
-
     this.conn = {
       // mysql 접속 설정
       host: "localhost",
@@ -14,6 +12,7 @@ class DBAccess {
       password: "bluejean",
       database: "bluejean",
     };
+    this.connection = mysql.createConnection(this.conn);
   }
 
   set setSqlQuery(sqlQuery) {
@@ -33,11 +32,11 @@ class DBAccess {
   executeQuery() {
     //비동기 DB를 처리 -> DB 작업이 마무리 된 후 select 결과를 전달
     return new Promise((resolve, reject) => {
-      this.dbConnect();
       this.connection.query(this.sqlQuery, async (err, rows) => {
         if (err) throw err;
         resolve(rows[0]);
         this.dbDisconnect();
+        this.dbConnect();
       });
     });
   }
