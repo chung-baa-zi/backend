@@ -3,8 +3,7 @@ const Game = require("./Game");
 class BombGame extends Game {
   constructor(gameType, roomId) {
     super(gameType, roomId);
-    // this.time = Math.floor(Math.random() * (30 - 0) + 30); //30초에서 60초 사이로 시간 랜덤 설정 -> setRandomTime()와 동일
-    this.time = Math.floor(Math.random() * (1 - 0) + 10);
+    this.time = Math.floor(Math.random() * (15 - 0) + 10); // 15초에서 25초 사이
     this.randomUsers = [];
     this.bombOwnerIndex = 0;
     // 시작했는지 여부를 나타내는 플래그 추가
@@ -12,7 +11,7 @@ class BombGame extends Game {
   }
 
   runTimerAlarm() {
-    if(this.time % 10 == 0) {
+    if (this.time % 10 == 0) {
       console.log("현재시간 : " + this.time);
     }
     this.time = this.time - 0.1;
