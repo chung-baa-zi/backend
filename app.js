@@ -23,6 +23,7 @@ io.on("connection", function (socket) {
   room.create(socket, mainEvent);
 
   //유저가 방에서 퇴장했을 때
+  room.exit(io, socket, mainEvent);
   room.disconnect(io, socket, mainEvent);
 
   // 게임 시작
