@@ -5,11 +5,6 @@ class MainEvent {
     this.roomList = new Array();
   }
 
-  logRoomList() {
-    for (let i = 0; i < this.roomList.length; i++)
-      console.log(this.roomList[i].users);
-  }
-
   createRoom(user, roomId) {
     let room = new Room(roomId, user.userName);
     room.addUser(user);

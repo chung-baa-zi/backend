@@ -9,10 +9,6 @@ module.exports = class GameResult {
     this.score = new Map();
   }
 
-  set setLosers(losers) {
-    this.losers.push(losers);
-  }
-
   get getLosers() {
     return this.losers;
   }
@@ -21,6 +17,10 @@ module.exports = class GameResult {
   }
   get getScore() {
     return this.score;
+  }
+
+  set setLosers(losers) {
+    this.losers.push(losers);
   }
 
   async randomCreatePenalty() {

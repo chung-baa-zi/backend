@@ -30,35 +30,39 @@ class BalanceGame extends Game {
     const resultToMap = new Map();
     let options = [];
 
-    this.getGResult.getScore.forEach((value) => {
+    this.getGResult.getScore.forEach((value, key) => {
       //score map에 저장된 선택지 별 count를 계산
-      if (resultToMap.has(value)) {
-        resultToMap.set(value, resultToMap.get(value) + 1);
+      if (value != "") {
+        if (resultToMap.has(value)) {
+          resultToMap.set(value, resultToMap.get(value) + 1);
+        } else {
+          resultToMap.set(value, 1);
+          options.push(value);
+        }
       } else {
-        resultToMap.set(value, 1);
-        options.push(value);
+        this.getGResult.losers.push(key);
+
+        console.log(this.getGResult.losers);
       }
     });
 
-    let result = [];
     //선택지 별 count를 통해 패자들을 결정
     if (resultToMap.get(options[0]) == resultToMap.get(options[1])) {
       //각 선택지 count가 같을 경우 모두 패자
       this.getGResult.getScore.forEach((value, key = key) => {
-        result.push(key);
+        this.getGResult.losers.push(key);
       });
     } else if (resultToMap.get(options[0]) > resultToMap.get(options[1])) {
       this.getGResult.getScore.forEach((value, key) => {
-        if (value == options[1]) result.push(key);
+        if (value == options[1]) this.getGResult.losers.push(key);
       });
     } else {
       this.getGResult.getScore.forEach((value, key) => {
-        if (value == options[0]) result.push(key);
+        if (value == options[0]) this.getGResult.losers.push(key);
       });
     }
 
-    console.log(this.getRoomId, "패자는 : " + result);
-    this.getGResult.losers = result;
+    console.log(this.getRoomId, "패자는 : " + this.getGResult.getLosers);
   }
 
   async setChoiceFromDB() {

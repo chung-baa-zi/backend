@@ -36,18 +36,19 @@ class BombGame extends Game {
     return this.randomUsers;
   }
 
+  // 폭탄 소유자 idx getter 추가
   get getBombOwnerIndex() {
     return this.bombOwnerIndex;
-  }
-
-  // 플래그 setter 추가
-  set setIsStarted(isStarted) {
-    this.isStarted = isStarted;
   }
 
   // 플래그 getter 추가
   get getIsStarted() {
     return this.isStarted;
+  }
+
+  // 플래그 setter 추가
+  set setIsStarted(isStarted) {
+    this.isStarted = isStarted;
   }
 
   // username 필요없음
@@ -56,11 +57,6 @@ class BombGame extends Game {
     if (this.bombOwnerIndex >= this.randomUsers.length) {
       this.bombOwnerIndex = 0;
     }
-  }
-
-  // 폭탄 소유자 idx getter 추가
-  get getBombOwnerIndex() {
-    return this.bombOwnerIndex;
   }
 
   async startGame() {
